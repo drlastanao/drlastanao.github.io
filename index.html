@@ -18,10 +18,13 @@
 <div class="container" id="app"><h2>{{ message }}</h2></br>
     Esta es la info Actual de destino -->
     <div v-if="busquedaActual!=null">
-        Parada {{busquedaActual.id}} - {{busquedaActual.title}} <br>
-        Destinos
+        Parada {{busquedaActual.id}} <br>
+        {{busquedaActual.title}} <br>
+        Destinos:
         <div v-for="destino in busquedaActual.destinos">
-            <div v-if="autobuses.includes(destino.linea)">{{destino.linea}} - {{destino.destino}} - {{destino.primero}} </div>           
+            <div v-if="autobuses.includes(destino.linea)">
+              <button type="button" class="btn btn-danger">{{destino.linea}}</button>{{destino.destino}}  - <b>{{destino.primero}} </b>
+            </div>           
         </div>
     </br>
     </div>
@@ -32,9 +35,8 @@
     <br>Estos son los destinos que tienes configurados:    </br>
 
     <div class="container"  v-for="item in postes">
+        <a v-bind:href="enlaceParadas+item.Parada+'.json'" target="_blank">{{item.Parada}}</a> 
         Destino nombre --> {{ item.Nombre}}  
-        </script>
-        <a v-bind:href="enlaceParadas+item.Parada+'.json'" target="_blank">{{item.Parada}} - {{item.NombreParada}}</a> 
         <button v-on:click="infoParada(item.Parada)" type="button" class="btn btn-success">Info...</button>
         <br><br>
     </div>
@@ -59,22 +61,11 @@
         busquedaActual : null,
         autobuses: ['33','21','36','CI1','CI2','24'],
         postes : [
-            {
-                "Nombre" : "Casa",
-                "Parada" : 178,
-                "NombreParada": "Avenida Madrid Portazgo"
-            },
-            {
-                "Nombre" : "Casa de Madre",
-                "Parada" : 3035,
-                "NombreParada": "Plaza Europa"
-            },
-            {
-                "Nombre" : "Via Universitas para currar",
-                "Parada" : 853,
-                "NombreParada": "Vía Universitas"
-            },
-
+            { "Nombre" : "Salir de casa","Parada" : 178,},
+            { "Nombre" : "Volver de casa de Madre","Parada" : 3035,},
+            {"Nombre" : "Ir al trabajo","Parada" : 853,},
+            {"Nombre" : "Volver a casa desde centro","Parada" : 315,},
+            {"Nombre" : "Volver del trabajo","Parada" : 716,},
         ]
       }
     },
