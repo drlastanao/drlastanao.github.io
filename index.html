@@ -1,0 +1,72 @@
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<div id="app"><h2>{{ message }}</h2></br>
+    Esta es la info Actual de destino -->
+    <div v-if="busquedaActual!=null">
+        Parada {{busquedaActual.id}} - {{busquedaActual.title}} <br>
+        Destinos
+        <div v-for="destino in busquedaActual.destinos">
+            <div v-if="autobuses.includes(destino.linea)">{{destino.linea}} - {{destino.destino}} - {{destino.primero}} </div>           
+        </div>
+    </br>
+    </div>
+    <br>Estos son los autobuses que sueles coger y mostraremos info solo de esos:    </br>
+    {{autobuses}}
+    <br>Estos son los destinos que tienes configurados:    </br>
+
+    <div v-for="item in postes">
+        Destino nombre --> {{ item.Nombre}}  
+        </script>
+        <a v-bind:href="enlaceParadas+item.Parada+'.json'" target="_blank">{{item.Parada}} - {{item.NombreParada}}</a> 
+        <button v-on:click="infoParada(item.Parada)">Info...</button>
+        </div>
+    </br>
+    </div>
+</div>
+
+<script>
+  const { createApp } = Vue
+
+  createApp({
+    
+ 
+    data() {
+      return {
+        message: 'DeivizPostes v1.0!',
+        enlaceParadas: 'https://www.zaragoza.es/sede/servicio/urbanismo-infraestructuras/transporte-urbano/poste-autobus/tuzsa-',
+        busquedaActual : null,
+        autobuses: ['33','21','36','CI1','CI2','24'],
+        postes : [
+            {
+                "Nombre" : "Casa",
+                "Parada" : 178,
+                "NombreParada": "Avenida Madrid Portazgo"
+            },
+            {
+                "Nombre" : "Casa de Madre",
+                "Parada" : 3035,
+                "NombreParada": "Plaza Europa"
+            },
+            {
+                "Nombre" : "Via Universitas para currar",
+                "Parada" : 853,
+                "NombreParada": "Vía Universitas"
+            },
+
+        ]
+      }
+    },
+    methods: {
+        infoParada: function (poste) {
+            let direction= this.enlaceParadas + poste + '.json';
+                fetch(direction)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    this.busquedaActual = data;
+                });
+           
+    }
+  }
+}).mount('#app')
+  
+</script>
