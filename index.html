@@ -36,9 +36,9 @@
 
     <div class="container"  v-for="item in postes">
         <a v-bind:href="enlaceParadas+item.Parada+'.json'" target="_blank">{{item.Parada}}</a> 
-        Destino nombre --> {{ item.Nombre}}  
+         {{ item.Nombre}}  
         <button v-on:click="infoParada(item.Parada)" type="button" class="btn btn-success">Info...</button>
-        <br><br>
+        <br>
     </div>
     </div>
     
