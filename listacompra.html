@@ -1,0 +1,95 @@
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="../../favicon.ico">
+    <link rel="canonical" href="https://getbootstrap.com/docs/3.4/examples/starter-template/">
+    <title>DeivizListaCompra</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+  </head>
+  <body>
+<div class="container" id="app"><h2>{{ message }}</h2></br>
+    Estos son los productos que tienes actualmente --><br><br>
+    <div v-if="cesta!=null">
+        <div v-for="producto in cesta">
+              
+              <p v-if="estaComprado(producto.Fecha)">Comprado
+                <button type="button" v-on:click="comprar(producto)" class="btn btn-success">{{producto.Nombre}}</button>
+                <button type="button" v-on:click="borrarProducto(producto)" class="btn btn-danger">Borrar</button>
+              </p> 
+              <p v-else>Debes comprar
+              <button type="button" v-on:click="comprar(producto)" class="btn btn-success">{{producto.Nombre}}</button>
+              <button type="button" v-on:click="borrarProducto(producto)" class="btn btn-danger">Borrar</button>
+              </p>  
+            <br>      
+        </div>
+    </br>
+    </div>
+    <div v-else><div class="container">Actualmente no hay productos en la lista</div>
+    </div>  
+ <div class="container">
+  Introduzca texto: <input v-model="otroProducto" placeholder="edíteme"><br>
+  <button v-on:click="addProducto(otroProducto)" type="button" class="btn btn-success">Añadir</button>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+<script>
+  const { createApp } = Vue
+
+  createApp({
+    
+ 
+    data() {
+      return {
+        cesta: null,
+        otroProducto:'',
+        message: 'DeivizListaCompra v1.0!',
+      }
+    },
+    mounted () {
+        let primer = document.cookie.split('=')[1];
+        this.cesta = JSON.parse(primer);
+
+    },      
+    methods: {
+        addProducto: function (producto) {
+            console.log(producto);
+            if (producto && producto!=='')
+            {
+                let auxProducto = { Nombre:producto,Fecha: null}
+                if (this.cesta == null)
+                {
+                    this.cesta = [];
+                };
+                this.cesta.push(auxProducto);
+                document.cookie='cesta=' + JSON.stringify(this.cesta);  
+            }
+        },
+        borrarProducto: function (producto)
+        {
+            this.cesta.pop(producto);
+            document.cookie='cesta=' + JSON.stringify(this.cesta);  
+        },
+        estaComprado(fecha)
+        {
+            if (fecha== null)
+             return false;  
+            return ((new Date() - fecha) / (1000*60*60*24))<7;
+        },
+        comprar(producto)
+        {
+            producto.Fecha = new Date();
+        }
+
+
+    }
+}).mount('#app')
+  
+</script>
