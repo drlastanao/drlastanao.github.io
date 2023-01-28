@@ -7,39 +7,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="../../favicon.ico">
     <link rel="canonical" href="https://getbootstrap.com/docs/3.4/examples/starter-template/">
-
     <title>DeivizPostes</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
-
   </head>
-
   <body>
-
 <div class="container" id="app"><h2>{{ message }}</h2></br>
-    Esta es la info Actual de destino -->
-    <div v-if="busquedaActual!=null">
-        {{busquedaActual.title}} <br>
+    Esta es la info Actual de destino --><br><br>
+    <div v-if="busquedaActual!=null && busquedaActual!='loading' && !errorBusqueda">
+        {{busquedaActual.title}} <br><br>
         <div v-for="destino in busquedaActual.destinos">
             <div v-if="autobuses.includes(destino.linea)">
               <button type="button" class="btn btn-danger">{{destino.linea}}</button>{{destino.destino}}  - <b>{{destino.primero}} </b>
-            </div>           
+            </div>     
+            <br>      
         </div>
     </br>
     </div>
+    <div v-else-if="busquedaActual=='loading' && !errorBusqueda">
+      Loading...<br>
+      <img src="img/loading.gif" class="rounded mx-auto d-block" alt="loading">
+    </div>
+    <div v-else-if="errorBusqueda">
+       Error<br>
+      <img src="img/Error.gif" class="rounded mx-auto d-block" alt="error">
+    </div>
+
+    <div v-else></div>
+    
     <br>Estos son los autobuses que sueles coger y mostraremos info solo de esos:    </br>
     <div class="container">
     <button v-for="auto in autobuses" type="button" class="btn btn-info">{{auto}}</button>&nbsp;&nbsp;&nbsp;
     </div>
     <br>Estos son los destinos que tienes configurados:    </br>
-
+    <div class="container">
+    <button v-for="item in postes"  v-on:click="infoParada(item.Parada)" type="button" class="btn btn-success">{{item.Parada}}</button>
+    </div>
     <div class="container"  v-for="item in postes">
         <a v-bind:href="enlaceParadas+item.Parada+'.json'" target="_blank">{{item.Parada}}</a> 
          {{ item.Nombre}}  
-        <button v-on:click="infoParada(item.Parada)" type="button" class="btn btn-success">Info...</button>
         <br>
     </div>
 <div class="container">
-  Introduzca número poste: <input v-model="otraParada" placeholder="edíteme">
+  Introduzca número poste: <input v-model="otraParada" placeholder="edíteme"><br>
   <button v-on:click="infoParada(otraParada)" type="button" class="btn btn-success">Buscar</button>
 </div>
 </div>
@@ -60,6 +69,7 @@
         message: 'DeivizPostes v1.0!',
         enlaceParadas: 'https://www.zaragoza.es/sede/servicio/urbanismo-infraestructuras/transporte-urbano/poste-autobus/tuzsa-',
         busquedaActual : null,
+        errorBusqueda: false,
         autobuses: ['33','21','36','CI1','CI2','24','42'],
         postes : [
             { "Nombre" : "Salir de casa","Parada" : 178,},
@@ -72,15 +82,23 @@
     },
     methods: {
         infoParada: function (poste) {
+            this.busquedaActual = 'loading';
+            this.errorBusqueda = false;
             let direction= this.enlaceParadas + poste + '.json';
                 fetch(direction)
-                .then(response => response.json())
+                .then(response => {
+                  if (response.status == 200) {
+                    return response.json();            
+                  } else {
+                    this.errorBusqueda=true;
+                    this.busquedaActual= response.statusText;
+                }
+              })
                 .then(data => {
-                    console.log(data);
                     this.busquedaActual = data;
-                });
+                })
               },
-      }
+            }
     }).mount('#app')
   
 </script>
