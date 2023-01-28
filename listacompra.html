@@ -48,19 +48,19 @@
  
     data() {
       return {
-        cesta: null,
+        cesta: [],
         otroProducto:'',
         message: 'DeivizListaCompra v1.0!',
       }
     },
     mounted () {
         let primer = document.cookie.split('=')[1];
-        this.cesta = JSON.parse(primer);
+        if (primer != null)
+          this.cesta = JSON.parse(primer);
 
     },      
     methods: {
         addProducto: function (producto) {
-            console.log(producto);
             if (producto && producto!=='')
             {
                 let auxProducto = { Nombre:producto,Fecha: null}
@@ -74,8 +74,9 @@
         },
         borrarProducto: function (producto)
         {
-            this.cesta.pop(producto);
+            this.cesta = this.cesta.filter(p => p.Nombre != producto.Nombre);
             document.cookie='cesta=' + JSON.stringify(this.cesta);  
+          
         },
         estaComprado(fecha)
         {
